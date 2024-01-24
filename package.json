@@ -1,0 +1,15 @@
+{
+  "name": "gm3-midi-mapping",
+  "version": "1.0.0",
+  "description": "OSC Mapping for GrandMA3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "max876",
+  "license": "ISC",
+  "dependencies": {
+    "easymidi": "^3.1.0",
+    "osc": "^2.4.4"
+  }
+}
