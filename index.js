@@ -22,15 +22,16 @@ var osc_io = new osc.UDPPort({
 
 osc_io.on("message", (msg) => {
     let address = msg.address.substring(1, msg.address.length)
+
     if (address == "Exec") { 
         let exec = msg.args[0].value
         let state = msg.args[1].value // 0 unlinked, 1 linked, 2 active
         if (exec % 100 > 8) return;
 
-        let x = exec % 100 - 1
-        let y = Math.floor(exec / 100) - 1
+        let row = exec % 100 - 1
+        let col = Math.floor(exec / 100) - 1
         let color = state == 2 ? 21 : state == 1 ? 96 : 0;
-        setPadColor(x + y * 8, brightness, color)
+        setPadColor(row + col * 8, brightness, color)
     }
 })
 
@@ -42,41 +43,35 @@ osc_io.on("ready", () => {
 midi_in.on('noteon', (msg) => {
     let note = msg.note;
     
-    if (note == 106) return prevPage()
-    if (note == 107) return nextPage()
+    if (note == 106) return prevPage();
+    if (note == 107) return nextPage();
 
-    if (note < 63) {
-        if (note <= 31) {
-            let execrow = Math.floor(note / 8) * 100 + 101
-            let offset = note % 8
-            pushExecutorButton(page, execrow + offset, 1)
-        }
-    } 
+    if (note <= 31) {
+        let execrow = Math.floor(note / 8) * 100 + 101;
+        let offset = note % 8;
+        pushExecutorButton(page, execrow + offset, 1);
+    }
 })
 
 midi_in.on('noteoff', (msg) => {
     let note = msg.note;
-
-    if (note < 63) {
-        if (note <= 31) {
-            let execrow = Math.floor(note / 8) * 100 + 101
-            let offset = note % 8
-            pushExecutorButton(page, execrow + offset, 0)
-        }
+    
+    if (note <= 31) {
+        let execrow = Math.floor(note / 8) * 100 + 101;
+        let offset = note % 8;
+        pushExecutorButton(page, execrow + offset, 0);
     }
 })
 
 midi_in.on('cc', (msg) => {
-    let controller = msg.controller    
-    let value = msg.value / 127
+    let controller = msg.controller;
+    let value = msg.value / 127;
     
     if (48 <= controller && controller <= 55) {
-        let fader = controller - 47 + 200
-        moveExecutorFader(page, fader, value)
-    } else if (controller == 56) {
-        moveGrandMasterFader(1, value)
-        // console.log(value)
-    }
+        let fader = controller - 47 + 200;
+        moveExecutorFader(page, fader, value);
+    } 
+    if (controller == 56) return moveGrandMasterFader(1, value);
 })
 
 
@@ -103,13 +98,13 @@ function sendOSC(address, ...args) {
 }
 
 function moveExecutorFader(page, executor, value) {
-	if (page == 0) return sendOSC("/Fader" + executor + "/", value * faderRange);
-	sendOSC("/Page" + page + "/Fader" + executor + "/", value * faderRange);
+	if (page == 0) return sendOSC(`/Fader${executor}/`, value * faderRange);
+	sendOSC(`/Page${page}/Fader${executor}/`, value * faderRange);
 }
 
 function pushExecutorButton(page, executor, value) {
-	if (page == 0) return sendOSC("/Key" + executor + "/", value);
-	sendOSC("/Page" + page + "/Key" + executor + "/", value);
+	if (page == 0) return sendOSC(`/Key${executor}/`, value);
+	sendOSC(`/Page${page}/Key${executor}/`, value);
 }
 
 const GrandMaster = {
@@ -135,16 +130,9 @@ function moveGrandMasterFader(grandMaster, value) {
 	//sendOSC("/13.12.2." + grandMaster, "FaderMaster", 1, value * 100);
 }  
 
-function nextPage() {
-    sendCommand("Next Page")
-}
-function prevPage() {
-    sendCommand("Prev Page")
-}
-
-function sendCommand(cmd) {
-	sendOSC("/cmd", cmd);
-}
+function nextPage() { sendCommand("Next Page"); }
+function prevPage() { sendCommand("Prev Page"); }
+function sendCommand(cmd) { sendOSC("/cmd", cmd); }
 
 
 const colors = {
