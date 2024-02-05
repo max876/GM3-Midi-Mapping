@@ -10,6 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "easymidi": "^3.1.0",
+    "midi": "^2.0.0",
     "osc": "^2.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.10",
+    "typescript": "^5.3.3"
   }
 }
