@@ -38,8 +38,8 @@ local function exec_runtime(exec_id)
 		
 		if exec.Object.Appearance ~= nil then
         	r = exec.Object.Appearance.backr
-       	 g = exec.Object.Appearance.backg
-       	 b = exec.Object.Appearance.backb
+            g = exec.Object.Appearance.backg
+            b = exec.Object.Appearance.backb
        end
         
 		if exec.Object:HasActivePlayback() then status = 2 end

@@ -53,11 +53,13 @@ class GrandMA3 extends (EventEmitter as new () => TypedEventEmitter<Events>) {
                 let exec = msg.args[0].value;
                 let state = msg.args[1].value;
                 let color = { R: msg.args[2].value, G: msg.args[3].value, B: msg.args[4].value };
+
                 if (color.R == 0 && color.G == 0 && color.B == 0) {
                     color.R = 255;
                     color.G = 255;
                     color.B = 255;
                 }
+                
 
                 this.execs.set(exec, { state, color });
                 this.emit('ExecutorUpdated', exec, { state, color })

@@ -1,20 +1,29 @@
 {
-  "name": "gm3-midi-mapping",
-  "version": "1.0.0",
-  "description": "OSC Mapping for GrandMA3",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "max876",
-  "license": "ISC",
-  "dependencies": {
-    "easymidi": "^3.1.0",
-    "midi": "^2.0.0",
-    "osc": "^2.4.4"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.10",
-    "typescript": "^5.3.3"
-  }
+    "name": "gm3-midi-mapping",
+    "version": "1.0.0",
+    "description": "GrandMA 3 midi mapping for the APC Mini MK2 ",
+    "main": "./build/js/index.js",
+    "bin": "./build/js/index.js",
+    "dependencies": {
+        "easymidi": "^3.1.0",
+        "osc": "^2.4.4",
+        "undici-types": "^5.26.5"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.19",
+        "pkg": "^5.8.1",
+        "typescript": "^5.3.3"
+    },
+    "scripts": {
+        "build": "tsc --build & pkg .",
+        "run": "node ./build/js/index.js",
+        "dev": "tsc --build & node ./build/js/index.js"
+    },
+    "author": "max876",
+    "license": "ISC",
+    "pkg": {
+        "scripts": "build/js/**/*.js",
+        "targets": [ "node16" ],
+        "outputPath": "./build/bin/"
+    }
 }

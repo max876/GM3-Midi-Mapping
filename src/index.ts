@@ -121,6 +121,7 @@ GM3.on('ExecutorUpdated', (exec, info) => {
     let wing = Math.floor((exec % 100 - 1) / 8);
     if (wing != GM3.wing) return;
 
+    exec -= GM3.wing * 8;
     let row = exec % 100 - 1;
     let col = Math.floor(exec / 100) - 1;
     if (info.state == ExecState.Unlinked) return APC.setPadOff(row, col);
