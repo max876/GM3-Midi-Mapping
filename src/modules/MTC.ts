@@ -21,18 +21,18 @@ class MTC {
         this.interval_id = null;
     }
 
-    private sendTimecode(output: easymidi.Output, frame: number, sec: number, min: number, hour: number) {
-        output.send('mtc', { type: 0, value: frame & 0x0F });
-        output.send('mtc', { type: 1, value: (frame & 0xF0) >> 4 });
-        output.send('mtc', { type: 2, value: sec & 0x0F });
-        output.send('mtc', { type: 3, value: (sec & 0xF0) >> 4 });
-        output.send('mtc', { type: 4, value: min & 0x0F });
-        output.send('mtc', { type: 5, value: (min & 0xF0) >> 4 });
-        output.send('mtc', { type: 6, value: hour & 0x0F });
-        output.send('mtc', { type: 7, value: (hour & 0xF0) >> 4 });
+    private sendTimecode(frame: number, sec: number, min: number, hour: number) {
+        this.output.send('mtc', { type: 0, value: frame & 0x0F });
+        this.output.send('mtc', { type: 1, value: (frame & 0xF0) >> 4 });
+        this.output.send('mtc', { type: 2, value: sec & 0x0F });
+        this.output.send('mtc', { type: 3, value: (sec & 0xF0) >> 4 });
+        this.output.send('mtc', { type: 4, value: min & 0x0F });
+        this.output.send('mtc', { type: 5, value: (min & 0xF0) >> 4 });
+        this.output.send('mtc', { type: 6, value: hour & 0x0F });
+        this.output.send('mtc', { type: 7, value: (hour & 0xF0) >> 4 });
     }
 
-    private handleTimecode(func: Function, out: easymidi.Output) {
+    private handleTimecode() {
         const currentTime = Date.now();
         const elapsedTime = currentTime - this.start_time + this.offset;
     
@@ -41,7 +41,7 @@ class MTC {
         const minute = Math.floor(elapsedTime / (60 * 1000)) % 60;
         const hour = Math.floor(elapsedTime / (60 * 60 * 1000)) % 24;
     
-        func(out, frame, second, minute, hour);
+        this.sendTimecode(frame, second, minute, hour);
     } 
     
     pause() {
@@ -55,7 +55,7 @@ class MTC {
     play() {
         if (this.isPlaying()) return;
         this.start_time = Date.now() - (this.paused_frame * 1000 / 24);
-        this.interval_id = setInterval(() => this.handleTimecode(this.sendTimecode, this.output), 1000 / 24);
+        this.interval_id = setInterval(() => this.handleTimecode(), 1000 / 24);
     }
 
     setTime(time: number) {
